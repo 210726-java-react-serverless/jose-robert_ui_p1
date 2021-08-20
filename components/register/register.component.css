@@ -1,4 +1,4 @@
-#login-component {
+#register-component {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -12,12 +12,16 @@
 }
 
 .form-floating {
-    width: 20vw;
+    width: 30vw;
 }
 
-.form-signin > h1 {
+.form-register > h1 {
     text-align: center;
     margin-bottom: 1.5rem!important;
+}
+
+.form-register > button {
+    margin-top: 1.5rem!important;
 }
 
 #error-msg-container {

@@ -1,21 +1,18 @@
 import router from "../../app.js";
 
-const NAVBAR_ELEMENT = document.getElementById("navbar");
+const NAVBAR_ELEMENT = document.getElementById('navbar');
 
 function NavbarComponent() {
 
-    let templateHolder = "";
-    let fragment = "components/navbar/navbar.component";
-
-    function navigate(e) {
-        router.navigate(e.target.dataset.route);
-    }
+    let templateHolder = '';
+    let frag = 'components/navbar/navbar.component';
 
     function injectTemplate(callback) {
+
         if (templateHolder) {
             NAVBAR_ELEMENT.innerHTML = templateHolder;
         } else {
-            fetch(`${fragment}.html`)
+            fetch(`${frag}.html`)
                 .then(resp => resp.text())
                 .then(html => {
                     templateHolder = html;
@@ -27,26 +24,33 @@ function NavbarComponent() {
     }
 
     function injectStylesheet() {
-        let stylesheet = document.getElementById("nav-css");
-        if (stylesheet) {
-            stylesheet.remove();
-        }
-        stylesheet = document.createElement("link");
-        stylesheet.id = "nav-css";
-        stylesheet.rel = "stylesheet";
-        stylesheet.href = `${fragment}.css`;
-        document.head.appendChild(stylesheet);
+        let dynamicStyle = document.getElementById('nav-css');
+        if (dynamicStyle) dynamicStyle.remove();
+        dynamicStyle = document.createElement('link');
+        dynamicStyle.id = 'nav-css';
+        dynamicStyle.rel = 'stylesheet';
+        dynamicStyle.href = `${frag}.css`;
+        document.head.appendChild(dynamicStyle);
+    }
+
+    function navigateToView(e) {
+        router.navigate(e.target.dataset.route);
+    }
+
+    function logout() {
+        console.log('Logging you out!');
     }
 
     this.render = function() {
-        injectTemplate(() => {
-            // document.getElementById("logout").addEventListener("click", logout);
-            // document.getElementById("nav-to-login").addEventListener("click", navigate);
-            // document.getElementById("nav-to-register").addEventListener("click", navigate);
-            // document.getElementById("nav-to-dashboard").addEventListener("click", navigate);
-        });
         injectStylesheet();
+        injectTemplate(() => {
+            document.getElementById('logout').addEventListener('click', logout);
+            document.getElementById('nav-to-login').addEventListener('click', navigateToView);
+            document.getElementById('nav-to-register').addEventListener('click', navigateToView);
+            document.getElementById('nav-to-dashboard').addEventListener('click', navigateToView);
+        });
     }
+
 }
 
 export default new NavbarComponent();

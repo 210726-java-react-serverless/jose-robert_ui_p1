@@ -1,18 +1,18 @@
-import { ViewComponent } from "../view.component.js";
-import env from "../../utils/env.js";
-import router from "../../app.js";
+import { ViewComponent } from '../view.component.js';
+import env from '../../util/env.js';
+import state from '../../util/state.js';
+import router from '../../app.js';
 
-LoginComponent.prototype = new ViewComponent("login");
-
+LoginComponent.prototype = new ViewComponent('login');
 function LoginComponent() {
-    
-    let usernameFieldEle;
-    let passwordFieldEle;
-    let loginBtnEle;
-    let errorMsgEle;
 
-    let username = "";
-    let password = "";
+    let usernameFieldElement;
+    let passwordFieldElement;
+    let loginButtonElement;
+    let errorMessageElement;
+
+    let username = '';
+    let password = '';
 
     function updateUsername(e) {
         username = e.target.value;
@@ -24,22 +24,23 @@ function LoginComponent() {
         console.log(password);
     }
 
-    function updateErrorMsg(msg) {
-        if (msg) {
-            errorMsgEle.removeAttribute("hidden");
-            errorMsgEle.innerText = msg;
+    function updateErrorMessage(errorMessage) {
+        if (errorMessage) {
+            errorMessageElement.removeAttribute('hidden');
+            errorMessageElement.innerText = errorMessage;
         } else {
-            errorMsgEle.setAttribute("hidden", "true");
-            errorMsgEle.innerText = "";
+            errorMessageElement.setAttribute('hidden', 'true');
+            errorMessageElement.innerText = '';
         }
     }
 
-    function login() {
+    async function asyncLogin() {
+
         if (!username || !password) {
-            updateErrorMsg("The credentials you provided are invalid!");
+            updateErrorMessage('You need to provide a username and a password!');
             return;
         } else {
-            updateErrorMsg("");
+            updateErrorMessage('');
         }
 
         let credentials = {
@@ -47,39 +48,43 @@ function LoginComponent() {
             password: password
         };
 
-        let status = 0;
-
-        fetch(`${env.apiUrl}/auth`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(credentials)
-        })
-            .then(resp => {
-                status = resp.status;
-                return resp.json();
-            })
-            .then(payload => {
-                if (status === 401) {
-                    updateErrorMsg(payload.message);
-                }
-            })
-            .catch(err => console.error(err));
+        try {
+            let response = await fetch(`${env.apiUrl}/auth`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(credentials)
+            });
+            let data = await response.json();
+            renderResponse(data);
+        } catch (e) {
+            console.log(e);
+        }
     }
 
-    this.render = function() {
-        LoginComponent.prototype.injectTemplate(() => {
-            usernameFieldEle = document.getElementById("login-form-username");
-            passwordFieldEle = document.getElementById("login-form-password");
-            loginBtnEle = document.getElementById("login-form-button");
-            errorMsgEle = document.getElementById("error-msg");
+    function renderResponse(payload) {
+        if (payload.statusCode === 401) {
+            updateErrorMessage(payload.message);
+        } else {
+            state.authUser = payload;
+            router.navigate("/dashboard");
+        }
+    }
 
-            usernameFieldEle.addEventListener("keyup", updateUsername);
-            passwordFieldEle.addEventListener("keyup", updatePassword);
-            loginBtnEle.addEventListener("click", login);
-        });
+
+    this.render = function() {
         LoginComponent.prototype.injectStylesheet();
+        LoginComponent.prototype.injectTemplate(() => {
+            usernameFieldElement = document.getElementById('login-form-username');
+            passwordFieldElement = document.getElementById('login-form-password');;
+            loginButtonElement = document.getElementById('login-form-button');;
+            errorMessageElement = document.getElementById('error-msg');
+
+            usernameFieldElement.addEventListener('keyup', updateUsername);
+            passwordFieldElement.addEventListener('keyup', updatePassword);
+            loginButtonElement.addEventListener('click', asyncLogin);
+        });
     }
 }
 
