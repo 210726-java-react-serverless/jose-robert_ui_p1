@@ -6,6 +6,10 @@
     padding-bottom: 2.75rem;
 }
 
+#type-container > label {
+    margin-right: 1rem;
+}
+
 .form-signin {
     padding: 1rem;
     margin: auto;

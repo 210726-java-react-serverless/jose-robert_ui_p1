@@ -8,6 +8,8 @@ function LoginComponent() {
 
     let usernameFieldElement;
     let passwordFieldElement;
+    let studentCheckFieldElement;
+    let facultyCheckFieldElement;
     let loginButtonElement;
     let errorMessageElement;
 
@@ -34,13 +36,22 @@ function LoginComponent() {
         }
     }
 
-    async function asyncLogin() {
-
+    async function login() {
         if (!username || !password) {
             updateErrorMessage('You need to provide a username and a password!');
             return;
         } else {
             updateErrorMessage('');
+        }
+        
+        let accountType = "";
+
+        if (studentCheckFieldElement.checked) {
+            accountType = "student";
+        } else if (facultyCheckFieldElement.checked) {
+            accountType = "faculty";
+        } else {
+            return;
         }
 
         let credentials = {
@@ -48,15 +59,19 @@ function LoginComponent() {
             password: password
         };
 
+        let url = (accountType === "student") ? `${env.apiUrl}/auth` : `${env.apiUrl}/faculty/auth`;
+
         try {
-            let response = await fetch(`${env.apiUrl}/auth`, {
+            let response = await fetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(credentials)
             });
+
             let data = await response.json();
+
             renderResponse(data);
         } catch (e) {
             console.log(e);
@@ -68,6 +83,7 @@ function LoginComponent() {
             updateErrorMessage(payload.message);
         } else {
             state.authUser = payload;
+            console.log(payload);
             router.navigate("/dashboard");
         }
     }
@@ -78,12 +94,14 @@ function LoginComponent() {
         LoginComponent.prototype.injectTemplate(() => {
             usernameFieldElement = document.getElementById('login-form-username');
             passwordFieldElement = document.getElementById('login-form-password');;
+            studentCheckFieldElement = document.getElementById('student-checkbox');
+            facultyCheckFieldElement = document.getElementById('faculty-checkbox');
             loginButtonElement = document.getElementById('login-form-button');;
             errorMessageElement = document.getElementById('error-msg');
 
             usernameFieldElement.addEventListener('keyup', updateUsername);
             passwordFieldElement.addEventListener('keyup', updatePassword);
-            loginButtonElement.addEventListener('click', asyncLogin);
+            loginButtonElement.addEventListener('click', login);
         });
     }
 }
