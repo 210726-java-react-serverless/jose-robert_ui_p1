@@ -7,27 +7,33 @@ DashboardComponent.prototype = new ViewComponent('dashboard');
 function DashboardComponent() {
 
     let welcomeUserElement;
-    let listElement;
+    let tableElement;
     let button;
     
     function displayCourses(...courseList) {
+        if (tableElement.hasChildNodes()) {
+            tableElement.innerHTML = "";
+            return;
+        }
+
         for (let item of courseList) {
-            let listItem = document.createElement("li");
-            listItem.innerText = item.course_name;
+            let tr = document.createElement("tr");
+            let courseCode = document.createElement("td");
+            let courseName = document.createElement("td");
+            let startDate = document.createElement("td");
+            let endDate = document.createElement("td");
 
-            let p1 = document.createElement("p");
-            p1.innerText = item.course_code;
+            courseCode.innerText = item.course_code;
+            courseName.innerText = item.course_name;
+            startDate.innerText = item.start_date;
+            endDate.innerText = item.end_date;
 
-            let p2 = document.createElement("p");
-            p2.innerText = item.start_date;
+            tr.appendChild(courseCode);
+            tr.appendChild(courseName);
+            tr.appendChild(startDate);
+            tr.appendChild(endDate);
 
-            let p3 = document.createElement("p");
-            p3.innerText = item.end_date;
-
-            listItem.appendChild(p1);
-            listItem.appendChild(p2);
-            listItem.appendChild(p3);
-            listElement.append(listItem);
+            tableElement.appendChild(tr);
         }
     }
 
@@ -68,7 +74,7 @@ function DashboardComponent() {
         DashboardComponent.prototype.injectTemplate(() => {
 
             welcomeUserElement = document.getElementById('welcome-user');
-            listElement = document.getElementById("list");
+            tableElement = document.getElementById("table-body");
             button = document.getElementById("my-button");
 
             welcomeUserElement.innerText = currentUsername;
