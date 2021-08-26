@@ -7,10 +7,15 @@ DashboardComponent.prototype = new ViewComponent("dashboard");
 function DashboardComponent() {
 
     let welcomeUserElement;
+    let addTableElement;
+    let dropTableElement;
     let tableElement;
     let myCourseElement;
-    let contactTab;
+    let addCourseElement;
+    let dropCourseElement;
+    let viewCourseElement;
 
+    // Get the students schedule
     async function getMyCourses() {
         let params = `?user_name=${state.authUser.username}`;
         try {
@@ -34,7 +39,8 @@ function DashboardComponent() {
         displayCourses(myCourseElement, 2, ...payload);
     }
 
-    async function getCourses() {
+    // Get all courses
+    async function getAllCourses() {
         try {
             let response = await fetch(`${env.apiUrl}/course`, {
                 method: "GET",
@@ -58,16 +64,9 @@ function DashboardComponent() {
             return;
         }
         displayCourses(tableElement, 4, ...payload);
-        // displayCourses(document.getElementById("course-list"), 2, ...payload); // this is for testing
     }
 
-    /**
-     * iterate through a list of courses, populate a table, and append it to the update element
-     * 
-     * @param {*} updateElement - the element to update
-     * @param {*} numElements - the number of 'td' to create
-     * @param  {...any} courseList - the list of courses
-     */
+    // Displays courses
     function displayCourses(updateElement, numElements, ...courseList) {
         if (updateElement.hasChildNodes()) {
             updateElement.innerHTML = "";
@@ -89,9 +88,7 @@ function DashboardComponent() {
     }
 
     this.render = function() {
-
         console.log(state);
-
         if (!state.authUser) {
             router.navigate('/login');
             return;
@@ -101,20 +98,111 @@ function DashboardComponent() {
 
         DashboardComponent.prototype.injectStylesheet();
         DashboardComponent.prototype.injectTemplate(() => {
-
             welcomeUserElement = document.getElementById("welcome-user");
             myCourseElement = document.getElementById("course-list");
+            addTableElement = document.getElementById("add-table-body");
+            dropTableElement = document.getElementById("drop-table-body");
             tableElement = document.getElementById("table-body");
-            contactTab = document.getElementById("contact-tab");
+            addCourseElement = document.getElementById("add-class-tab");
+            dropCourseElement = document.getElementById("drop-class-tab");
+            viewCourseElement = document.getElementById("view-course-tab");
 
             welcomeUserElement.innerText = currentUsername;
-
-            contactTab.addEventListener("click", getCourses);
-            getMyCourses();
+            // addCourseElement.addEventListener("click", getOpenCourses);
+            dropCourseElement.addEventListener("click", droppableCourses);
+            viewCourseElement.addEventListener("click", getAllCourses);
+            getMyCourses(); // get schedule on startup
         });
 
     }
 
+    async function droppableCourses() {
+        let params = `?user_name=${state.authUser.username}`;
+        try {
+            let response = await fetch(`${env.apiUrl}/register${params}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify()
+            });
+
+            let data = await response.json();
+
+            renderDroppable(data);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    function renderDroppable(payload) {
+        addAndDrop(dropTableElement, "drop", ...payload);
+    }
+
+    function addAndDrop(tableElement, context, ...list) {
+        if (tableElement.hasChildNodes()) {
+            tableElement.innerHTML = "";
+        }
+
+        for (let item of list) {
+            let tr = document.createElement("tr");
+            let name = document.createElement("td");
+            let code = document.createElement("td");
+            let start = document.createElement("td");
+            let end = document.createElement("td");
+            let btnContainer = document.createElement("td");
+            let btn = document.createElement("button");
+
+            name.innerText = item.course_name;
+            code.innerText = item.course_code;
+            start.innerText = item.start_date;
+            end.innerText = item.end_date;
+            
+            if (context === "drop") {
+                btn.innerText = "Drop";
+            } else {
+                btn.innerText = "Add";
+            }
+
+            btn.addEventListener("click", function() {
+                if (context === "drop") {
+                    dropClass(item.course_code);
+                }
+            });
+
+            tr.appendChild(name);
+            tr.appendChild(code);
+            tr.appendChild(start);
+            tr.appendChild(end);
+            tr.appendChild(btnContainer);
+            btnContainer.appendChild(btn);
+            tableElement.append(tr);
+        }
+    }
+
+    async function dropClass(code) {
+        let params = `?user_name=${state.authUser.username}&course_code=${code}`;
+        try {
+            let response = await fetch(`${env.apiUrl}/register${params}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify()
+            });
+
+            if (response.status === 204) {
+                console.log("Successfully unregistered from course!");
+                // reset the drop and my schedule list
+                getMyCourses();
+                droppableCourses();
+            } else {
+                console.error("An unexpected error occurred");
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
 }
 
 export default new DashboardComponent();
