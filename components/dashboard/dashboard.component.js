@@ -88,7 +88,6 @@ function DashboardComponent() {
         }
     }
 
-
     this.render = function() {
 
         console.log(state);
