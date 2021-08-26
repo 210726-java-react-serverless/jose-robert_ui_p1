@@ -8,34 +8,7 @@ function DashboardComponent() {
 
     let welcomeUserElement;
     let tableElement;
-    let button;
-
-    function displayCourses(...courseList) {
-        // if (tableElement.hasChildNodes()) {
-        //     tableElement.innerHTML = "";
-        //     return;
-        // }
-
-        for (let item of courseList) {
-            let tr = document.createElement("tr");
-            let courseCode = document.createElement("td");
-            let courseName = document.createElement("td");
-            let startDate = document.createElement("td");
-            let endDate = document.createElement("td");
-
-            courseCode.innerText = item.course_code;
-            courseName.innerText = item.course_name;
-            startDate.innerText = item.start_date;
-            endDate.innerText = item.end_date;
-
-            tr.appendChild(courseCode);
-            tr.appendChild(courseName);
-            tr.appendChild(startDate);
-            tr.appendChild(endDate);
-
-            tableElement.append(tr);
-        }
-    }
+    let contactTab;
 
     async function getCourses() {
         try {
@@ -56,7 +29,39 @@ function DashboardComponent() {
     }
 
     function renderCourses(payload) {
-        displayCourses(...payload);
+        if (payload.statusCode === 401) {
+            // give error - can't access
+            return;
+        }
+        displayCourses(tableElement, 4, ...payload);
+        displayCourses(document.getElementById("course-list"), 2, ...payload); // this is for testing
+    }
+
+    /**
+     * iterate through a list of courses, populate a table, and append it to the update element
+     * 
+     * @param {*} updateElement - the element to update
+     * @param {*} numElements - the number of 'td' to create
+     * @param  {...any} courseList - the list of courses
+     */
+    function displayCourses(updateElement, numElements, ...courseList) {
+        if (updateElement.hasChildNodes()) {
+            updateElement.innerHTML = "";
+        }
+
+        for (let item of courseList) {
+            let tr = document.createElement("tr");
+            let count = 0;
+            for (let prop in item) {
+                if (prop !== "course_id" && count < numElements) {
+                    let td = document.createElement("td");
+                    td.innerText = item[prop];
+                    tr.append(td);
+                    count++
+                }
+            }
+            updateElement.append(tr);
+        }
     }
 
     this.render = function() {
@@ -75,10 +80,11 @@ function DashboardComponent() {
 
             welcomeUserElement = document.getElementById('welcome-user');
             tableElement = document.getElementById("table-body");
-            button = document.getElementById("my-button");
+            contactTab = document.getElementById("contact-tab");
 
             welcomeUserElement.innerText = currentUsername;
-            button.addEventListener("contact-tab", getCourses);
+
+            contactTab.addEventListener("click", getCourses);
         });
 
     }
