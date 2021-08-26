@@ -64,7 +64,6 @@ function DashboardComponent() {
         }
     }
 
-
     this.render = function() {
 
         console.log(state);
@@ -86,7 +85,6 @@ function DashboardComponent() {
             welcomeUserElement.innerText = currentUsername;
 
             contactTab.addEventListener("click", getCourses);
-
         });
 
     }
