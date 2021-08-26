@@ -3,12 +3,36 @@ import env from '../../util/env.js';
 import state from '../../util/state.js';
 import router from '../../app.js';
 
-DashboardComponent.prototype = new ViewComponent('dashboard');
+DashboardComponent.prototype = new ViewComponent("dashboard");
 function DashboardComponent() {
 
     let welcomeUserElement;
     let tableElement;
+    let myCourseElement;
     let contactTab;
+
+    async function getMyCourses() {
+        let params = `?user_name=${state.authUser.username}`;
+        try {
+            let response = await fetch(`${env.apiUrl}/register${params}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify()
+            });
+
+            let data = await response.json();
+
+            renderMyCourses(data);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    function renderMyCourses(payload) {
+        displayCourses(myCourseElement, 2, ...payload);
+    }
 
     async function getCourses() {
         try {
@@ -34,7 +58,7 @@ function DashboardComponent() {
             return;
         }
         displayCourses(tableElement, 4, ...payload);
-        displayCourses(document.getElementById("course-list"), 2, ...payload); // this is for testing
+        // displayCourses(document.getElementById("course-list"), 2, ...payload); // this is for testing
     }
 
     /**
@@ -79,14 +103,15 @@ function DashboardComponent() {
         DashboardComponent.prototype.injectStylesheet();
         DashboardComponent.prototype.injectTemplate(() => {
 
-            welcomeUserElement = document.getElementById('welcome-user');
+            welcomeUserElement = document.getElementById("welcome-user");
+            myCourseElement = document.getElementById("course-list");
             tableElement = document.getElementById("table-body");
             contactTab = document.getElementById("contact-tab");
 
             welcomeUserElement.innerText = currentUsername;
 
             contactTab.addEventListener("click", getCourses);
-
+            getMyCourses();
         });
 
     }
