@@ -108,12 +108,33 @@ function DashboardComponent() {
             viewCourseElement = document.getElementById("view-course-tab");
 
             welcomeUserElement.innerText = currentUsername;
-            // addCourseElement.addEventListener("click", getOpenCourses);
+            addCourseElement.addEventListener("click", getOpenCourses);
             dropCourseElement.addEventListener("click", droppableCourses);
             viewCourseElement.addEventListener("click", getAllCourses);
             getMyCourses(); // get schedule on startup
         });
 
+    }
+
+    async function getOpenCourses() {
+        try {
+            let response = await fetch(`${env.apiUrl}/course?available=true`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify()
+            });
+
+            let data = await response.json();
+            renderAddable(data);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    function renderAddable(payload) {
+        addAndDrop(addTableElement, "add", ...payload);
     }
 
     async function droppableCourses() {
@@ -167,6 +188,8 @@ function DashboardComponent() {
             btn.addEventListener("click", function() {
                 if (context === "drop") {
                     dropClass(item.course_code);
+                } else if (context === "add") {
+                    addClass(item.course_code);
                 }
             });
 
@@ -198,6 +221,26 @@ function DashboardComponent() {
                 droppableCourses();
             } else {
                 console.error("An unexpected error occurred");
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+    
+    async function addClass(code) {
+        let params = `?user_name=${state.authUser.username}&course_code=${code}`;
+        try {
+            let response = await fetch(`${env.apiUrl}/register${params}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify()
+            });
+            if (response.status === 200) {
+                getMyCourses();
+            } else {
+                console.error("An unexpected error occurred")
             }
         } catch (e) {
             console.log(e);

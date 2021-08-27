@@ -1,4 +1,5 @@
 import router from "../../app.js";
+import state from "../../util/state.js";
 
 const NAVBAR_ELEMENT = document.getElementById('navbar');
 
@@ -38,7 +39,8 @@ function NavbarComponent() {
     }
 
     function logout() {
-        console.log('Logging you out!');
+        state.authUser = null;
+        router.navigate("/login");
     }
 
     this.render = function() {
@@ -47,7 +49,6 @@ function NavbarComponent() {
             document.getElementById('logout').addEventListener('click', logout);
             document.getElementById('nav-to-login').addEventListener('click', navigateToView);
             document.getElementById('nav-to-register').addEventListener('click', navigateToView);
-            document.getElementById('nav-to-dashboard').addEventListener('click', navigateToView);
         });
     }
 

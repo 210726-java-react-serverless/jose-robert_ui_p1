@@ -82,8 +82,10 @@ function LoginComponent() {
         if (payload.statusCode === 401) {
             updateErrorMessage(payload.message);
         } else {
+            document.getElementById("nav-to-login").setAttribute("hidden", "true");
+            document.getElementById("nav-to-register").setAttribute("hidden", "true");
+            document.getElementById("logout").removeAttribute("hidden");
             state.authUser = payload;
-            console.log(payload);
             router.navigate("/dashboard");
         }
     }
