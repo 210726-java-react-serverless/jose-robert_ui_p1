@@ -69,9 +69,9 @@ function LoginComponent() {
                 },
                 body: JSON.stringify(credentials)
             });
-
+            let token = response.headers.get("Authorization");
+            state.token = token;
             let data = await response.json();
-
             renderResponse(data);
         } catch (e) {
             console.log(e);
@@ -80,16 +80,18 @@ function LoginComponent() {
 
     function renderResponse(payload) {
         if (payload.statusCode === 401) {
+            state.token = null;
             updateErrorMessage(payload.message);
         } else {
+            console.log(payload);
+            state.authUser = payload;
+            router.navigate("/dashboard");
+
             document.getElementById("nav-to-login").setAttribute("hidden", "true");
             document.getElementById("nav-to-register").setAttribute("hidden", "true");
             document.getElementById("logout").removeAttribute("hidden");
-            state.authUser = payload;
-            router.navigate("/dashboard");
         }
     }
-
 
     this.render = function() {
         LoginComponent.prototype.injectStylesheet();

@@ -112,6 +112,7 @@ function DashboardComponent() {
             dropCourseElement.addEventListener("click", droppableCourses);
             viewCourseElement.addEventListener("click", getAllCourses);
             getMyCourses(); // get schedule on startup
+            getOpenCourses(); // get courses that you can add in beginning
         });
 
     }
