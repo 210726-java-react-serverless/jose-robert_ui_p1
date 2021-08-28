@@ -1,0 +1,133 @@
+<h1>Welcome Professor <span id="welcome-user"></span></h1>
+<div class="accordion accordion-flush" id="accordionFlushExample">
+
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="flush-headingOne">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                Create a new course
+            </button>
+        </h2>
+        <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+
+                <!--        ============START CREATE COURSE FORM=====================-->
+                <div id="login-component">
+                        <div class="form-signin">
+
+                                <h1 class="h3 mb-3 fw-normal">CREATE A COURSE</h1>
+
+                                <div id="courseName-container" class="form-floating">
+                                    <input type="text" class="form-control" id="create-form-courseName" placeholder="course name">
+                                    <label for="create-form-courseName">course name</label>
+                                </div>
+
+
+                                <div id="courseCode-container" class="form-floating">
+                                    <input type="text" class="form-control" id="create-form-courseCode" placeholder="course code">
+                                    <label for="create-form-courseCode">course code</label>
+                                </div>
+
+
+                                <div id="startDate-container" class="form-floating">
+                                    <input type="date" class="form-control" id="create-form-startDate" placeholder="start date">
+                                    <label for="create-form-startDate">start end</label>
+                                </div>
+
+
+
+                                <div id="endDate-container" class="form-floating">
+                                    <input type="date" class="form-control" id="create-form-endDate" placeholder="end date">
+                                    <label for="create-form-endDate">end date</label>
+                                </div>
+
+                        </div>
+
+
+                        <button id="create-course-button" class="w-100 btn btn-lg btn-primary" type="submit">CREATE</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+            <!--        ============END CREATE COURSE FORM=====================-->
+
+
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="flush-headingTwo">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                Remove a Course
+            </button>
+        </h2>
+        <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+
+                <!--        ============START DELETE COURSE FORM=====================-->
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Course Name</th>
+                                        <th>Course Code</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="delete-course-body">
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md">
+
+
+                            <div class="form-signin">
+                                <div id="delete-course-container" class="form-floating">
+                                    <input type="text" class="form-control" id="delete-course-form" placeholder="Enter Course code to delete course">
+                                    <label for="delete-course-form">Delete Course</label>
+                                </div>
+                                <button id="delete-course-button" class="w-100 btn btn-lg btn-primary" type="submit">Delete</button>
+                            </div>
+
+                        </div>
+                    </div>
+            </div>
+                <!--        ============END DELETE COURSE FORM=====================-->
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="flush-headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+               Edit a course
+            </button>
+        </h2>
+        <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">Placeholder content for this accordion, which is intended to <br>
+                <br>demonstrate the <code>.accordion-flush</code> class. This is the thir
+                d
+                d
+                d
+                d
+                d
+                d
+                d
+                d
+                dd item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
+        </div>
+    </div>
+</div>
+<div id="error-msg-container">
+    <p hidden id="error-msg" class="alert alert-danger"></p>
+</div>
