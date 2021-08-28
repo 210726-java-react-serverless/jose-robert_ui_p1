@@ -40,6 +40,9 @@ function NavbarComponent() {
 
     function logout() {
         state.authUser = null;
+        document.getElementById("nav-to-login").removeAttribute("hidden");
+        document.getElementById("nav-to-register").removeAttribute("hidden");
+        document.getElementById("logout").setAttribute("hidden", "true");
         router.navigate("/login");
     }
 

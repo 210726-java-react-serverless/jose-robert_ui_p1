@@ -11,11 +11,14 @@ function DashboardComponent() {
     let dropTableElement;
     let tableElement;
     let myCourseElement;
+
     let addCourseElement;
     let dropCourseElement;
     let viewCourseElement;
 
-    // Get the students schedule
+    /**
+     * Get the schedule of the currently logged in user
+     */
     async function getMyCourses() {
         let params = `?user_name=${state.authUser.username}`;
         try {
@@ -39,7 +42,10 @@ function DashboardComponent() {
         displayCourses(myCourseElement, 2, ...payload);
     }
 
-    // Get all courses
+    /**
+     * Returns all courses, regardless of whether they are within registration
+     * date
+     */
     async function getAllCourses() {
         try {
             let response = await fetch(`${env.apiUrl}/course`, {
@@ -60,13 +66,20 @@ function DashboardComponent() {
 
     function renderCourses(payload) {
         if (payload.statusCode === 401) {
-            // give error - can't access
             return;
         }
         displayCourses(tableElement, 4, ...payload);
     }
 
-    // Displays courses
+    /**
+     * Takes in an element to update, the number of elements to read, and a
+     * list of courses. Will use this information to generate a table
+     * of courses
+     * 
+     * @param {*} updateElement 
+     * @param {*} numElements 
+     * @param  {...any} courseList 
+     */
     function displayCourses(updateElement, numElements, ...courseList) {
         if (updateElement.hasChildNodes()) {
             updateElement.innerHTML = "";
@@ -87,36 +100,7 @@ function DashboardComponent() {
         }
     }
 
-    this.render = function() {
-        console.log(state);
-        if (!state.authUser) {
-            router.navigate('/login');
-            return;
-        }
-
-        let currentUsername = state.authUser.username;
-
-        DashboardComponent.prototype.injectStylesheet();
-        DashboardComponent.prototype.injectTemplate(() => {
-            welcomeUserElement = document.getElementById("welcome-user");
-            myCourseElement = document.getElementById("course-list");
-            addTableElement = document.getElementById("add-table-body");
-            dropTableElement = document.getElementById("drop-table-body");
-            tableElement = document.getElementById("table-body");
-            addCourseElement = document.getElementById("add-class-tab");
-            dropCourseElement = document.getElementById("drop-class-tab");
-            viewCourseElement = document.getElementById("view-course-tab");
-
-            welcomeUserElement.innerText = currentUsername;
-            addCourseElement.addEventListener("click", getOpenCourses);
-            dropCourseElement.addEventListener("click", droppableCourses);
-            viewCourseElement.addEventListener("click", getAllCourses);
-            getMyCourses(); // get schedule on startup
-        });
-
-    }
-
-    async function getOpenCourses() {
+    async function openCourseList() {
         try {
             let response = await fetch(`${env.apiUrl}/course?available=true`, {
                 method: "GET",
@@ -127,17 +111,17 @@ function DashboardComponent() {
             });
 
             let data = await response.json();
-            renderAddable(data);
+            renderAdd(data);
         } catch (e) {
             console.log(e);
         }
     }
 
-    function renderAddable(payload) {
-        addAndDrop(addTableElement, "add", ...payload);
+    function renderAdd(payload) {
+        addCourse(...payload);
     }
 
-    async function droppableCourses() {
+    async function dropCourseList() {
         let params = `?user_name=${state.authUser.username}`;
         try {
             let response = await fetch(`${env.apiUrl}/register${params}`, {
@@ -150,56 +134,71 @@ function DashboardComponent() {
 
             let data = await response.json();
 
-            renderDroppable(data);
+            renderDrop(data);
         } catch (e) {
             console.log(e);
         }
     }
 
-    function renderDroppable(payload) {
-        addAndDrop(dropTableElement, "drop", ...payload);
+    function renderDrop(payload) {
+        dropCourse(...payload);
     }
 
-    function addAndDrop(tableElement, context, ...list) {
-        if (tableElement.hasChildNodes()) {
-            tableElement.innerHTML = "";
+    function addCourse(...list) {
+        if (addTableElement.hasChildNodes()) {
+            addTableElement.innerHTML = "";
         }
 
         for (let item of list) {
             let tr = document.createElement("tr");
-            let name = document.createElement("td");
-            let code = document.createElement("td");
-            let start = document.createElement("td");
-            let end = document.createElement("td");
-            let btnContainer = document.createElement("td");
-            let btn = document.createElement("button");
-
-            name.innerText = item.course_name;
-            code.innerText = item.course_code;
-            start.innerText = item.start_date;
-            end.innerText = item.end_date;
-            
-            if (context === "drop") {
-                btn.innerText = "Drop";
-            } else {
-                btn.innerText = "Add";
-            }
-
-            btn.addEventListener("click", function() {
-                if (context === "drop") {
-                    dropClass(item.course_code);
-                } else if (context === "add") {
-                    addClass(item.course_code);
+            let count = 0;
+            for (let prop in item) {
+                if (prop !== "course_id" && count < 4) {
+                    let td = document.createElement("td");
+                    td.innerText = item[prop];
+                    tr.append(td);
+                    count++;
                 }
+            }
+            let btnContainer = document.createElement("td");
+            let addBtn = document.createElement("button");
+            addBtn.innerText = "Add";
+            addBtn.addEventListener("click", function() {
+                addClass(item.course_code)
             });
 
-            tr.appendChild(name);
-            tr.appendChild(code);
-            tr.appendChild(start);
-            tr.appendChild(end);
-            tr.appendChild(btnContainer);
-            btnContainer.appendChild(btn);
-            tableElement.append(tr);
+            btnContainer.append(addBtn);
+            tr.append(btnContainer);
+            addTableElement.append(tr);
+        }
+    }
+
+    function dropCourse(...list) {
+        if (dropTableElement.hasChildNodes()) {
+            dropTableElement.innerHTML = "";
+        }
+
+        for (let item of list) {
+            let tr = document.createElement("tr");
+            let count = 0;
+            for (let prop in item) {
+                if (prop !== "course_id" && count < 4) {
+                    let td = document.createElement("td");
+                    td.innerText = item[prop];
+                    tr.append(td);
+                    count++;
+                }
+            }
+            let btnContainer = document.createElement("td");
+            let dropBtn = document.createElement("button");
+            dropBtn.innerText = "Drop";
+            dropBtn.addEventListener("click", function() {
+                dropClass(item.course_code);
+            });
+
+            btnContainer.append(dropBtn);
+            tr.append(btnContainer);
+            dropTableElement.append(tr);
         }
     }
 
@@ -218,7 +217,7 @@ function DashboardComponent() {
                 console.log("Successfully unregistered from course!");
                 // reset the drop and my schedule list
                 getMyCourses();
-                droppableCourses();
+                dropCourseList();
             } else {
                 console.error("An unexpected error occurred");
             }
@@ -245,6 +244,35 @@ function DashboardComponent() {
         } catch (e) {
             console.log(e);
         }
+    }
+    this.render = function() {
+        console.log(state);
+        if (!state.authUser) {
+            router.navigate('/login');
+            return;
+        }
+
+        let currentUsername = state.authUser.username;
+
+        DashboardComponent.prototype.injectStylesheet();
+        DashboardComponent.prototype.injectTemplate(() => {
+            welcomeUserElement = document.getElementById("welcome-user");
+            myCourseElement = document.getElementById("course-list");
+            addTableElement = document.getElementById("add-table-body");
+            dropTableElement = document.getElementById("drop-table-body");
+            tableElement = document.getElementById("table-body");
+            addCourseElement = document.getElementById("add-class-tab");
+            dropCourseElement = document.getElementById("drop-class-tab");
+            viewCourseElement = document.getElementById("view-course-tab");
+
+            welcomeUserElement.innerText = currentUsername;
+            addCourseElement.addEventListener("click", openCourseList);
+            dropCourseElement.addEventListener("click", dropCourseList);
+            viewCourseElement.addEventListener("click", getAllCourses);
+            getMyCourses();
+            openCourseList();
+        });
+
     }
 }
 

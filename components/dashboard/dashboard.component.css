@@ -17,5 +17,10 @@ div{
 }
 
 #student-info{
-    height: 200px;
+    height: 250px;
+}
+
+#student-courses {
+    height: inherit;
+    overflow: auto;
 }
