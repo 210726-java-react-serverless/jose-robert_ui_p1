@@ -70,6 +70,9 @@ function LoginComponent() {
                 body: JSON.stringify(credentials)
             });
 
+            let token = response.headers.get("Authorization");
+            state.token = token;
+            
             let data = await response.json();
 
             renderResponse(data);
