@@ -3,6 +3,8 @@ import env from '../../util/env.js';
 import state from '../../util/state.js';
 import router from '../../app.js';
 
+
+
 DashboardComponent.prototype = new ViewComponent('dashboard');
 function DashboardComponent() {
 

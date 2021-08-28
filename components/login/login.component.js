@@ -12,7 +12,7 @@ function LoginComponent() {
     let facultyCheckFieldElement;
     let loginButtonElement;
     let errorMessageElement;
-
+    let accountType = "";
     let username = '';
     let password = '';
 
@@ -44,7 +44,7 @@ function LoginComponent() {
             updateErrorMessage('');
         }
         
-        let accountType = "";
+
 
         if (studentCheckFieldElement.checked) {
             accountType = "student";
@@ -81,10 +81,14 @@ function LoginComponent() {
     function renderResponse(payload) {
         if (payload.statusCode === 401) {
             updateErrorMessage(payload.message);
-        } else {
+        } else if (accountType === "student"){
             state.authUser = payload;
             console.log(payload);
             router.navigate("/dashboard");
+        }else if (accountType === "faculty"){
+            state.authUser = payload;
+            console.log(payload);
+            router.navigate("/facultyDashboard");
         }
     }
 

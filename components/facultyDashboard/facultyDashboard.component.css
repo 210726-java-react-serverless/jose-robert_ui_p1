@@ -1,0 +1,9 @@
+table{
+    height: 100px;
+    width: 500px;
+}
+
+.accordion-body{
+    background-color: gray;
+    color: blue;
+}
