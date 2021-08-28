@@ -3,16 +3,50 @@ import env from '../../util/env.js';
 import state from '../../util/state.js';
 import router from '../../app.js';
 
-
-
-DashboardComponent.prototype = new ViewComponent('dashboard');
+DashboardComponent.prototype = new ViewComponent("dashboard");
 function DashboardComponent() {
 
     let welcomeUserElement;
+    let addTableElement;
+    let dropTableElement;
     let tableElement;
-    let contactTab;
+    let myCourseElement;
 
-    async function getCourses() {
+    let addCourseElement;
+    let dropCourseElement;
+    let viewCourseElement;
+
+    /**
+     * Get the schedule of the currently logged in user
+     */
+    async function getMyCourses() {
+        let params = `?user_name=${state.authUser.username}`;
+        try {
+            let response = await fetch(`${env.apiUrl}/register${params}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify()
+            });
+
+            let data = await response.json();
+
+            renderMyCourses(data);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    function renderMyCourses(payload) {
+        displayCourses(myCourseElement, 2, ...payload);
+    }
+
+    /**
+     * Returns all courses, regardless of whether they are within registration
+     * date
+     */
+    async function getAllCourses() {
         try {
             let response = await fetch(`${env.apiUrl}/course`, {
                 method: "GET",
@@ -32,19 +66,19 @@ function DashboardComponent() {
 
     function renderCourses(payload) {
         if (payload.statusCode === 401) {
-            // give error - can't access
             return;
         }
         displayCourses(tableElement, 4, ...payload);
-        displayCourses(document.getElementById("course-list"), 2, ...payload); // this is for testing
     }
 
     /**
-     * iterate through a list of courses, populate a table, and append it to the update element
+     * Takes in an element to update, the number of elements to read, and a
+     * list of courses. Will use this information to generate a table
+     * of courses
      * 
-     * @param {*} updateElement - the element to update
-     * @param {*} numElements - the number of 'td' to create
-     * @param  {...any} courseList - the list of courses
+     * @param {*} updateElement 
+     * @param {*} numElements 
+     * @param  {...any} courseList 
      */
     function displayCourses(updateElement, numElements, ...courseList) {
         if (updateElement.hasChildNodes()) {
@@ -66,10 +100,153 @@ function DashboardComponent() {
         }
     }
 
+    async function openCourseList() {
+        try {
+            let response = await fetch(`${env.apiUrl}/course?available=true`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify()
+            });
+
+            let data = await response.json();
+            renderAdd(data);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    function renderAdd(payload) {
+        addCourse(...payload);
+    }
+
+    async function dropCourseList() {
+        let params = `?user_name=${state.authUser.username}`;
+        try {
+            let response = await fetch(`${env.apiUrl}/register${params}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify()
+            });
+
+            let data = await response.json();
+
+            renderDrop(data);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    function renderDrop(payload) {
+        dropCourse(...payload);
+    }
+
+    function addCourse(...list) {
+        if (addTableElement.hasChildNodes()) {
+            addTableElement.innerHTML = "";
+        }
+
+        for (let item of list) {
+            let tr = document.createElement("tr");
+            let count = 0;
+            for (let prop in item) {
+                if (prop !== "course_id" && count < 4) {
+                    let td = document.createElement("td");
+                    td.innerText = item[prop];
+                    tr.append(td);
+                    count++;
+                }
+            }
+            let btnContainer = document.createElement("td");
+            let addBtn = document.createElement("button");
+            addBtn.innerText = "Add";
+            addBtn.addEventListener("click", function() {
+                addClass(item.course_code)
+            });
+
+            btnContainer.append(addBtn);
+            tr.append(btnContainer);
+            addTableElement.append(tr);
+        }
+    }
+
+    function dropCourse(...list) {
+        if (dropTableElement.hasChildNodes()) {
+            dropTableElement.innerHTML = "";
+        }
+
+        for (let item of list) {
+            let tr = document.createElement("tr");
+            let count = 0;
+            for (let prop in item) {
+                if (prop !== "course_id" && count < 4) {
+                    let td = document.createElement("td");
+                    td.innerText = item[prop];
+                    tr.append(td);
+                    count++;
+                }
+            }
+            let btnContainer = document.createElement("td");
+            let dropBtn = document.createElement("button");
+            dropBtn.innerText = "Drop";
+            dropBtn.addEventListener("click", function() {
+                dropClass(item.course_code);
+            });
+
+            btnContainer.append(dropBtn);
+            tr.append(btnContainer);
+            dropTableElement.append(tr);
+        }
+    }
+
+    async function dropClass(code) {
+        let params = `?user_name=${state.authUser.username}&course_code=${code}`;
+        try {
+            let response = await fetch(`${env.apiUrl}/register${params}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify()
+            });
+
+            if (response.status === 204) {
+                console.log("Successfully unregistered from course!");
+                // reset the drop and my schedule list
+                getMyCourses();
+                dropCourseList();
+            } else {
+                console.error("An unexpected error occurred");
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+    
+    async function addClass(code) {
+        let params = `?user_name=${state.authUser.username}&course_code=${code}`;
+        try {
+            let response = await fetch(`${env.apiUrl}/register${params}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify()
+            });
+            if (response.status === 200) {
+                getMyCourses();
+            } else {
+                console.error("An unexpected error occurred")
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
     this.render = function() {
-
         console.log(state);
-
         if (!state.authUser) {
             router.navigate('/login');
             return;
@@ -79,18 +256,24 @@ function DashboardComponent() {
 
         DashboardComponent.prototype.injectStylesheet();
         DashboardComponent.prototype.injectTemplate(() => {
-
-            welcomeUserElement = document.getElementById('welcome-user');
+            welcomeUserElement = document.getElementById("welcome-user");
+            myCourseElement = document.getElementById("course-list");
+            addTableElement = document.getElementById("add-table-body");
+            dropTableElement = document.getElementById("drop-table-body");
             tableElement = document.getElementById("table-body");
-            contactTab = document.getElementById("contact-tab");
+            addCourseElement = document.getElementById("add-class-tab");
+            dropCourseElement = document.getElementById("drop-class-tab");
+            viewCourseElement = document.getElementById("view-course-tab");
 
             welcomeUserElement.innerText = currentUsername;
-
-            contactTab.addEventListener("click", getCourses);
+            addCourseElement.addEventListener("click", openCourseList);
+            dropCourseElement.addEventListener("click", dropCourseList);
+            viewCourseElement.addEventListener("click", getAllCourses);
+            getMyCourses();
+            openCourseList();
         });
 
     }
-
 }
 
 export default new DashboardComponent();

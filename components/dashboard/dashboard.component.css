@@ -1,4 +1,8 @@
-h1{
+tbody, td, tfoot, th, thead, tr {
+    padding-right: 2rem;
+}
+
+h1 {
     color: black;
     background-color: coral;
     text-align: center;
@@ -8,20 +12,15 @@ h2{
     text-align: center;
 }
 
-div{
+div {
     position: relative;
 }
 
-
-ul{
-
-}
-
 #student-info{
-    height: 200px;
+    height: 250px;
 }
 
-{
-
-
+#student-courses {
+    height: inherit;
+    overflow: auto;
 }

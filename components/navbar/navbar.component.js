@@ -1,8 +1,13 @@
 import router from "../../app.js";
+import state from "../../util/state.js";
 
 const NAVBAR_ELEMENT = document.getElementById('navbar');
 
 function NavbarComponent() {
+
+    let logoutElement;
+    let loginElement;
+    let registerElement;
 
     let templateHolder = '';
     let frag = 'components/navbar/navbar.component';
@@ -38,16 +43,25 @@ function NavbarComponent() {
     }
 
     function logout() {
-        console.log('Logging you out!');
+        state.authUser = null;
+        state.token = null;
+        document.getElementById("nav-to-login").removeAttribute("hidden");
+        document.getElementById("nav-to-register").removeAttribute("hidden");
+        document.getElementById("logout").setAttribute("hidden", "true");
+        router.navigate("/login");
     }
 
     this.render = function() {
         injectStylesheet();
         injectTemplate(() => {
-            document.getElementById('logout').addEventListener('click', logout);
-            document.getElementById('nav-to-login').addEventListener('click', navigateToView);
-            document.getElementById('nav-to-register').addEventListener('click', navigateToView);
-            document.getElementById('nav-to-dashboard').addEventListener('click', navigateToView);
+            document.getElementById("dashboard").addEventListener("click", navigateToView);
+            logoutElement = document.getElementById('logout');
+            loginElement = document.getElementById('nav-to-login');
+            registerElement = document.getElementById('nav-to-register');
+
+            logoutElement.addEventListener("click", logout);
+            loginElement.addEventListener("click", navigateToView);
+            registerElement.addEventListener('click', navigateToView);
         });
     }
 
