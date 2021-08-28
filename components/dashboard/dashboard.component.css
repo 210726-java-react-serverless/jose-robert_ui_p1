@@ -2,7 +2,7 @@ tbody, td, tfoot, th, thead, tr {
     padding-right: 2rem;
 }
 
-h1{
+h1 {
     color: black;
     background-color: coral;
     text-align: center;
@@ -12,7 +12,7 @@ h2{
     text-align: center;
 }
 
-div{
+div {
     position: relative;
 }
 
