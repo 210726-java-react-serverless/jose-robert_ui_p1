@@ -160,7 +160,6 @@ function FacultyDashboardComponent() {
             return;
         }
         displayCourses(tableElement, 4, ...payload);
-        getOpenCourses()
     }
 
 
@@ -180,9 +179,8 @@ function FacultyDashboardComponent() {
             return;
         } else {
             updateErrorMessage("");
-
-
         }
+
         try {
             let response = await fetch(`${env.apiUrl}/course?course_code=${del_input}`, {
                 method: "DELETE",
@@ -204,12 +202,10 @@ function FacultyDashboardComponent() {
     function renderDelete(payload) {
         if (payload.statusCode === 401) {
             updateErrorMessage(payload.message);
-        }else {
-            console.log(payload)
-
+        } else {
+            console.log(payload);
+            getOpenCourses();
         }
-
-
     }
 
 
@@ -239,6 +235,7 @@ function FacultyDashboardComponent() {
                 errorMessageElement = document.getElementById('error-msg');
                 tableElement = document.getElementById('delete-course-body');
 
+                document.getElementById("remove-course-container").addEventListener("click", getOpenCourses);
                 deleteButton = document.getElementById('delete-course-button');
                 deleted_Course = document.getElementById("delete-course-form");
 
@@ -251,7 +248,6 @@ function FacultyDashboardComponent() {
                 startDateElement.addEventListener('keyup', updatestart_date);
                 endDateElement.addEventListener('keyup', updateend_date);
                 createCourseButton.addEventListener('click', createCourse);
-                getOpenCourses()
                 welcomeUserElement = document.getElementById('welcome-user');
 
 
