@@ -1,3 +1,4 @@
 # IDE specific files
 .idea/
 *.iml
+/node_modules
