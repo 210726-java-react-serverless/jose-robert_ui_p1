@@ -26,6 +26,7 @@ function DashboardComponent() {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": state.token
                 },
                 body: JSON.stringify()
             });
@@ -51,7 +52,8 @@ function DashboardComponent() {
             let response = await fetch(`${env.apiUrl}/course`, {
                 method: "GET",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": state.token
                 },
                 body: JSON.stringify()
             });
@@ -100,12 +102,16 @@ function DashboardComponent() {
         }
     }
 
+    /**
+     * This function will fetch all courses that students can register for.
+     */
     async function openCourseList() {
         try {
             let response = await fetch(`${env.apiUrl}/course?available=true`, {
                 method: "GET",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": state.token
                 },
                 body: JSON.stringify()
             });
@@ -121,6 +127,9 @@ function DashboardComponent() {
         addCourse(...payload);
     }
 
+    /**
+     * This function will fetch the students schedule and allow them to drop the course
+     */
     async function dropCourseList() {
         let params = `?user_name=${state.authUser.username}`;
         try {
@@ -128,6 +137,7 @@ function DashboardComponent() {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": state.token
                 },
                 body: JSON.stringify()
             });
@@ -144,6 +154,10 @@ function DashboardComponent() {
         dropCourse(...payload);
     }
 
+    /**
+     * This function generates the tables using the list of courses.
+     * It also allows students to add a course to their schedule.
+     */
     function addCourse(...list) {
         if (addTableElement.hasChildNodes()) {
             addTableElement.innerHTML = "";
@@ -173,6 +187,10 @@ function DashboardComponent() {
         }
     }
 
+    /**
+     * This function generates a table with courses a student is registered for.
+     * Students can also drop a course if it's on their schedule.
+     */
     function dropCourse(...list) {
         if (dropTableElement.hasChildNodes()) {
             dropTableElement.innerHTML = "";
@@ -202,13 +220,20 @@ function DashboardComponent() {
         }
     }
 
+    /**
+     * This function calls the API to drop a specified course. It takes in a
+     * course_code as a parameter
+     * 
+     * @param {*} code 
+     */
     async function dropClass(code) {
         let params = `?user_name=${state.authUser.username}&course_code=${code}`;
         try {
             let response = await fetch(`${env.apiUrl}/register${params}`, {
                 method: "DELETE",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": state.token
                 },
                 body: JSON.stringify()
             });
@@ -226,13 +251,20 @@ function DashboardComponent() {
         }
     }
     
+    /**
+     * This function takes in a course_code. From there, it calls the API
+     * to add the course to their schedule
+     * 
+     * @param {*} code 
+     */
     async function addClass(code) {
         let params = `?user_name=${state.authUser.username}&course_code=${code}`;
         try {
             let response = await fetch(`${env.apiUrl}/register${params}`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": state.token
                 },
                 body: JSON.stringify()
             });
@@ -245,6 +277,7 @@ function DashboardComponent() {
             console.log(e);
         }
     }
+
     this.render = function() {
         console.log(state);
         if (!state.authUser) {
@@ -269,6 +302,7 @@ function DashboardComponent() {
             addCourseElement.addEventListener("click", openCourseList);
             dropCourseElement.addEventListener("click", dropCourseList);
             viewCourseElement.addEventListener("click", getAllCourses);
+            
             getMyCourses();
             openCourseList();
         });
