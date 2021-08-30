@@ -21,10 +21,18 @@ function FacultyDashboardComponent() {
     let start_date = "";
     let end_date = "";
 
-
     let tableElement;
     let deleteButton;
     let deleted_Course ="";
+
+
+
+
+
+
+    let updateCourseElement;
+    let updateButton;
+
 
 
     //////////////START Create course logic/////////////////
@@ -117,6 +125,11 @@ function FacultyDashboardComponent() {
 
 
 
+
+
+
+    /////////////////DELETE COURSE/////////////////
+
     function displayCourses(updateElement, numElements, ...courseList) {
         if (updateElement.hasChildNodes()) {
             updateElement.innerHTML = "";
@@ -156,15 +169,13 @@ function FacultyDashboardComponent() {
 
     function renderAll(payload) {
         if (payload.statusCode === 401) {
-            // give error - can't access
+            updateErrorMessage("Something went wrong")
             return;
         }
         displayCourses(tableElement, 4, ...payload);
     }
 
 
-
-    /////////////////DELETE COURSE/////////////////
 
 
     function deletedCourse(e) {
@@ -175,7 +186,7 @@ function FacultyDashboardComponent() {
 
     async function deleteCourse() {
         if (!del_input) {
-            updateErrorMessage("Can't leave field blank or course doesnt exist")
+            updateErrorMessage("Can't leave field blank or course doesnt exist");
             return;
         } else {
             updateErrorMessage("");
@@ -192,6 +203,7 @@ function FacultyDashboardComponent() {
 
             let data = await response.json();
             renderDelete(data);
+            del_input.value="";
 
         } catch (e) {
             console.log(e);
@@ -207,6 +219,110 @@ function FacultyDashboardComponent() {
             getOpenCourses();
         }
     }
+
+    ///////////////END delete logic//////////////////
+
+
+
+
+    ////////// Update course ///////////////
+    let courseToUpdate="";
+    let fieldToUpdate ="";
+    let updateTo ="";
+
+
+    function update_course(e) {
+        courseToUpdate = e.target.value;
+        console.log(courseToUpdate);
+    }
+    function field_to_Update(e) {
+        fieldToUpdate = e.target.value;
+        console.log(fieldToUpdate);
+    }
+    function UpdateTo(e) {
+        updateTo = e.target.value;
+        console.log(updateTo);
+    }
+
+
+
+
+    async function updateACourse(){
+        if (!courseToUpdate || !fieldToUpdate || !updateTo) {
+            updateErrorMessage("Can't leave field blank or course doesnt exist")
+            return;
+        } else {
+            updateErrorMessage("");
+
+
+        }
+        let courseUpdater = {
+            course_code:courseToUpdate,
+            field:fieldToUpdate,
+            updateTo:updateTo
+        };
+        console.log(courseUpdater)
+        try {
+            let response = await fetch(`${env.apiUrl}/course`, {
+                method: "PUT",
+                headers: "Content-Type": "application/json"
+                },
+                body: JSON.stringify(courseUpdater)
+            });
+
+            let data = await response.json();
+            update(data);
+
+            courseToUpdate.value="";
+            fieldToUpdate.value="";
+            updateTo.value="";
+
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    function update(payload) {
+        if (payload.statusCode === 401) {
+            updateErrorMessage(payload.message);
+
+        }else
+            console.log(payload);
+    }
+
+
+
+
+
+    async function getCourseUpdate() {
+
+        try {
+            let response = await fetch(`${env.apiUrl}/course`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify()
+            });
+
+            let data = await response.json();
+            renderAllUpdate(data);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    function renderAllUpdate(payload) {
+        if (payload.statusCode === 401) {
+            updateErrorMessage(payload.message);
+            return;
+        }
+        displayCourses(updateCourseElement, 4, ...payload)
+    }
+
+
+    ///////////END UPDATE course/////////////
+
 
 
 
@@ -224,7 +340,7 @@ function FacultyDashboardComponent() {
             }
 
             let currentUsername = state.authUser.username;
-            FacultyDashboardComponent.prototype.injectStylesheet();
+
             FacultyDashboardComponent.prototype.injectTemplate(() => {
 
                 courseNameElement = document.getElementById('create-form-courseName');
@@ -236,13 +352,25 @@ function FacultyDashboardComponent() {
                 tableElement = document.getElementById('delete-course-body');
 
                 document.getElementById("remove-course-container").addEventListener("click", getOpenCourses);
+              
+                courseToUpdate=document.getElementById('Update-course-form')
+                fieldToUpdate=document.getElementById('Update-field-form')
+                updateTo=document.getElementById('Update-To-form')
                 deleteButton = document.getElementById('delete-course-button');
                 deleted_Course = document.getElementById("delete-course-form");
+
+
+                updateCourseElement=document.getElementById('update-course-body');
+                updateButton=document.getElementById('Update-course-button')
+
 
                 deleted_Course.addEventListener('keyup', deletedCourse)
                 deleteButton.addEventListener('click', deleteCourse)
 
-
+                updateButton.addEventListener('click', updateACourse)
+                courseToUpdate.addEventListener('keyup', update_course)
+                fieldToUpdate.addEventListener('keyup', field_to_Update)
+                updateTo.addEventListener('keyup', UpdateTo)
                 courseNameElement.addEventListener('keyup', updatecourse_name);
                 courseCodeElement.addEventListener('keyup', updatecourse_code);
                 startDateElement.addEventListener('keyup', updatestart_date);
@@ -255,7 +383,7 @@ function FacultyDashboardComponent() {
 
 
             });
-
+            FacultyDashboardComponent.prototype.injectStylesheet();
         }
 
 

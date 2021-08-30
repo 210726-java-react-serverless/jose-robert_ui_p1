@@ -83,7 +83,7 @@
                         <div class="col-md">
 
 
-                            <div class="form-signin">
+                            <div class="form-delete">
                                 <div id="delete-course-container" class="form-floating">
                                     <input type="text" class="form-control" id="delete-course-form" placeholder="Enter Course code to delete course">
                                     <label for="delete-course-form">Delete Course</label>
@@ -93,15 +93,11 @@
 
                         </div>
                     </div>
-            </div>
+                </div>
                 <!--        ============END DELETE COURSE FORM=====================-->
             </div>
         </div>
     </div>
-
-
-
-
 
 
 
@@ -114,17 +110,66 @@
             </button>
         </h2>
         <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
-            <div class="accordion-body">Placeholder content for this accordion, which is intended to <br>
-                <br>demonstrate the <code>.accordion-flush</code> class. This is the thir
-                d
-                d
-                d
-                d
-                d
-                d
-                d
-                d
-                dd item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
+            <div class="accordion-body">
+
+
+                <div class="container" id="delete-container">
+                    <div class="row" id="row-container">
+                        <div class="col-md" id="one">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>Course Name</th>
+                                    <th>Course Code</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                </tr>
+                                </thead>
+                                <tbody id="update-course-body">
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md" id="two">
+
+
+
+                            <div class="form-update-course">
+
+                                    <div id="Update-course-container" class="form-floating">
+                                        <input type="text" class="form-control" id="Update-course-form" placeholder="Enter Course code to delete course">
+                                        <label for="Update-course-form">Course Code</label>
+                                    </div>
+
+
+                                    <div id="Update-field-container" class="form-floating">
+                                        <input type="text" class="form-control" id="Update-field-form" placeholder="Enter Course code to delete course">
+                                        <label for="Update-field-form">Field to update</label>
+                                    </div>
+
+
+                                    <div id="Update-To-container" class="form-floating">
+                                        <input type="text" class="form-control" id="Update-To-form" placeholder="Enter Course code to delete course">
+                                        <label for="Update-To-form">New Update</label>
+                                    </div>
+
+
+                                    <button id="Update-course-button" class="w-100 btn btn-lg btn-primary" type="submit">Update</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+
+            </div>
         </div>
     </div>
 </div>
