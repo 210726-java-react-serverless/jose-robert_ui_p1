@@ -21,3 +21,6 @@ h2#flush-headingThree.accordion-header{
     border-style: inset;
     border-color: black;
 }
+tr{
+    border-bottom: solid;
+}

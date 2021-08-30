@@ -52,7 +52,7 @@ function NavbarComponent() {
     }
 
     this.render = function() {
-        injectStylesheet();
+
         injectTemplate(() => {
             document.getElementById("dashboard").addEventListener("click", navigateToView);
             logoutElement = document.getElementById('logout');
@@ -63,6 +63,7 @@ function NavbarComponent() {
             loginElement.addEventListener("click", navigateToView);
             registerElement.addEventListener('click', navigateToView);
         });
+        injectStylesheet();
     }
 
 }

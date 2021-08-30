@@ -101,7 +101,8 @@ function FacultyDashboardComponent() {
             let response = await fetch(`${env.apiUrl}/course`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": state.token
                 },
                 body: JSON.stringify(course)
             });
@@ -155,7 +156,8 @@ function FacultyDashboardComponent() {
             let response = await fetch(`${env.apiUrl}/course`, {
                 method: "GET",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": state.token
                 },
                 body: JSON.stringify()
             });
@@ -196,14 +198,15 @@ function FacultyDashboardComponent() {
             let response = await fetch(`${env.apiUrl}/course?course_code=${del_input}`, {
                 method: "DELETE",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": state.token
                 },
                 body: JSON.stringify()
             });
 
             let data = await response.json();
             renderDelete(data);
-            del_input.value="";
+            deleted_Course.value="";
 
         } catch (e) {
             console.log(e);
@@ -267,7 +270,8 @@ function FacultyDashboardComponent() {
             let response = await fetch(`${env.apiUrl}/course`, {
                 method: "PUT",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": state.token
                 },
                 body: JSON.stringify(courseUpdater)
             });
@@ -306,7 +310,8 @@ function FacultyDashboardComponent() {
             let response = await fetch(`${env.apiUrl}/course`, {
                 method: "GET",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": state.token
                 },
                 body: JSON.stringify()
             });
@@ -347,7 +352,7 @@ function FacultyDashboardComponent() {
                 return;
             }
 
-            let currentUsername = state.authUser.username;
+            let currentUsername = state.authUser.username.toUpperCase();
 
             FacultyDashboardComponent.prototype.injectTemplate(() => {
 
