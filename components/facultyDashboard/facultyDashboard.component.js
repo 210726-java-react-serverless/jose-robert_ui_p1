@@ -226,18 +226,18 @@ function FacultyDashboardComponent() {
 
 
     ////////// Update course ///////////////
-    let courseToUpdate="";
-    let fieldToUpdate ="";
+    let courseCode="";
+    let field ="";
     let updateTo ="";
 
 
     function update_course(e) {
-        courseToUpdate = e.target.value;
-        console.log(courseToUpdate);
+        courseCode = e.target.value;
+        console.log(courseCode);
     }
     function field_to_Update(e) {
-        fieldToUpdate = e.target.value;
-        console.log(fieldToUpdate);
+        field = e.target.value;
+        console.log(field);
     }
     function UpdateTo(e) {
         updateTo = e.target.value;
@@ -248,7 +248,12 @@ function FacultyDashboardComponent() {
 
 
     async function updateACourse(){
-        if (!courseToUpdate || !fieldToUpdate || !updateTo) {
+        let courseUpdater = {
+        course_code:courseCode,
+        field:field,
+        updateTo:updateTo
+    };
+        if (!courseCode || !field || !updateTo) {
             updateErrorMessage("Can't leave field blank or course doesnt exist")
             return;
         } else {
@@ -256,11 +261,7 @@ function FacultyDashboardComponent() {
 
 
         }
-        let courseUpdater = {
-            course_code:courseToUpdate,
-            field:fieldToUpdate,
-            updateTo:updateTo
-        };
+
         console.log(courseUpdater)
         try {
             let response = await fetch(`${env.apiUrl}/course`, {
@@ -274,8 +275,8 @@ function FacultyDashboardComponent() {
             let data = await response.json();
             update(data);
 
-            courseToUpdate.value="";
-            fieldToUpdate.value="";
+            courseCode.value="";
+            field.value="";
             updateTo.value="";
 
         } catch (e) {
@@ -358,8 +359,8 @@ function FacultyDashboardComponent() {
                 document.getElementById("remove-course-container").addEventListener("click", getOpenCourses);
                 document.getElementById("edit-course-container").addEventListener("click", getCourseUpdate);
               
-                courseToUpdate=document.getElementById('Update-course-form')
-                fieldToUpdate=document.getElementById('Update-field-form')
+                courseCode=document.getElementById('Update-course-form')
+                field=document.getElementById('Update-field-form')
                 updateTo=document.getElementById('Update-To-form')
                 deleteButton = document.getElementById('delete-course-button');
                 deleted_Course = document.getElementById("delete-course-form");
@@ -373,8 +374,8 @@ function FacultyDashboardComponent() {
                 deleteButton.addEventListener('click', deleteCourse)
 
                 updateButton.addEventListener('click', updateACourse)
-                courseToUpdate.addEventListener('keyup', update_course)
-                fieldToUpdate.addEventListener('keyup', field_to_Update)
+                courseCode.addEventListener('keyup', update_course)
+                field.addEventListener('keyup', field_to_Update)
                 updateTo.addEventListener('keyup', UpdateTo)
                 courseNameElement.addEventListener('keyup', updatecourse_name);
                 courseCodeElement.addEventListener('keyup', updatecourse_code);

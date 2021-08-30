@@ -4,6 +4,20 @@ table{
 }
 
 .accordion-body{
-    background-color: gray;
-    color: blue;
+    background-color: coral;
+    color: black;
+}
+
+
+h2#flush-headingOne.accordion-header{
+    border-style: inset;
+    border-color: black;
+}
+h2#flush-headingTwo.accordion-header{
+    border-style: inset;
+    border-color: black;
+}
+h2#flush-headingThree.accordion-header{
+    border-style: inset;
+    border-color: black;
 }
