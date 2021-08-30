@@ -287,7 +287,8 @@ function FacultyDashboardComponent() {
     function update(payload) {
         if (payload.statusCode === 401) {
             updateErrorMessage(payload.message);
-
+        }else if (payload.statusCode === 500){
+            updateErrorMessage(payload.message);
         }else {
             console.log(payload);
             getCourseUpdate();
@@ -321,6 +322,8 @@ function FacultyDashboardComponent() {
         if (payload.statusCode === 401) {
             updateErrorMessage(payload.message);
             return;
+        }else if (payload.statusCode === 500){
+            updateErrorMessage(payload.message);
         }
         displayCourses(updateCourseElement, 4, ...payload)
     }
