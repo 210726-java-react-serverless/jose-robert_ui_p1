@@ -54,7 +54,6 @@ function NavbarComponent() {
     this.render = function() {
 
         injectTemplate(() => {
-            document.getElementById("dashboard").addEventListener("click", navigateToView);
             logoutElement = document.getElementById('logout');
             loginElement = document.getElementById('nav-to-login');
             registerElement = document.getElementById('nav-to-register');
