@@ -265,7 +265,8 @@ function FacultyDashboardComponent() {
         try {
             let response = await fetch(`${env.apiUrl}/course`, {
                 method: "PUT",
-                headers: "Content-Type": "application/json"
+                headers: {
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify(courseUpdater)
             });
@@ -286,8 +287,11 @@ function FacultyDashboardComponent() {
         if (payload.statusCode === 401) {
             updateErrorMessage(payload.message);
 
-        }else
+        }else {
             console.log(payload);
+            getCourseUpdate();
+        }
+
     }
 
 
@@ -352,6 +356,7 @@ function FacultyDashboardComponent() {
                 tableElement = document.getElementById('delete-course-body');
 
                 document.getElementById("remove-course-container").addEventListener("click", getOpenCourses);
+                document.getElementById("edit-course-container").addEventListener("click", getCourseUpdate);
               
                 courseToUpdate=document.getElementById('Update-course-form')
                 fieldToUpdate=document.getElementById('Update-field-form')
