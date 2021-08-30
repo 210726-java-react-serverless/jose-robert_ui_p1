@@ -1,0 +1,26 @@
+tbody, td, tfoot, th, thead, tr {
+    padding-right: 2rem;
+}
+
+h1 {
+    color: black;
+    background-color: coral;
+    text-align: center;
+}
+h2{
+    background-color: coral;
+    text-align: center;
+}
+
+div {
+    position: relative;
+}
+
+#student-info{
+    height: 250px;
+}
+
+#student-courses {
+    height: inherit;
+    overflow: auto;
+}

@@ -12,7 +12,7 @@ function LoginComponent() {
     let facultyCheckFieldElement;
     let loginButtonElement;
     let errorMessageElement;
-
+    let accountType = "";
     let username = '';
     let password = '';
 
@@ -44,7 +44,7 @@ function LoginComponent() {
             updateErrorMessage('');
         }
         
-        let accountType = "";
+
 
         if (studentCheckFieldElement.checked) {
             accountType = "student";
@@ -69,9 +69,10 @@ function LoginComponent() {
                 },
                 body: JSON.stringify(credentials)
             });
+            let token = response.headers.get("Authorization");
+            state.token = token;
 
             let data = await response.json();
-
             renderResponse(data);
         } catch (e) {
             console.log(e);
@@ -80,14 +81,27 @@ function LoginComponent() {
 
     function renderResponse(payload) {
         if (payload.statusCode === 401) {
+            state.token = null;
             updateErrorMessage(payload.message);
-        } else {
+        } else if (accountType === "student"){
             state.authUser = payload;
             console.log(payload);
+            state.authUser = payload;
             router.navigate("/dashboard");
+          
+            document.getElementById("nav-to-login").setAttribute("hidden", "true");
+            document.getElementById("nav-to-register").setAttribute("hidden", "true");
+            document.getElementById("logout").removeAttribute("hidden");
+        } else if (accountType === "faculty"){
+            state.authUser = payload;
+            console.log(payload);
+            router.navigate("/facultyDashboard");
+          
+            document.getElementById("nav-to-login").setAttribute("hidden", "true");
+            document.getElementById("nav-to-register").setAttribute("hidden", "true");
+            document.getElementById("logout").removeAttribute("hidden");
         }
     }
-
 
     this.render = function() {
         LoginComponent.prototype.injectStylesheet();
