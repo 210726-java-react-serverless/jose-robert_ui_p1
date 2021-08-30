@@ -173,7 +173,6 @@ function FacultyDashboardComponent() {
             return;
         }
         displayCourses(tableElement, 4, ...payload);
-        getOpenCourses()
     }
 
 
@@ -191,9 +190,8 @@ function FacultyDashboardComponent() {
             return;
         } else {
             updateErrorMessage("");
-
-
         }
+
         try {
             let response = await fetch(`${env.apiUrl}/course?course_code=${del_input}`, {
                 method: "DELETE",
@@ -216,13 +214,10 @@ function FacultyDashboardComponent() {
     function renderDelete(payload) {
         if (payload.statusCode === 401) {
             updateErrorMessage(payload.message);
-        }else {
+        } else {
             console.log(payload);
-
+            getOpenCourses();
         }
-
-
-
     }
 
     ///////////////END delete logic//////////////////
@@ -270,8 +265,7 @@ function FacultyDashboardComponent() {
         try {
             let response = await fetch(`${env.apiUrl}/course`, {
                 method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
+                headers: "Content-Type": "application/json"
                 },
                 body: JSON.stringify(courseUpdater)
             });
@@ -324,8 +318,6 @@ function FacultyDashboardComponent() {
             return;
         }
         displayCourses(updateCourseElement, 4, ...payload)
-        getCourseUpdate()
-
     }
 
 
@@ -358,6 +350,9 @@ function FacultyDashboardComponent() {
                 createCourseButton = document.getElementById('create-course-button');
                 errorMessageElement = document.getElementById('error-msg');
                 tableElement = document.getElementById('delete-course-body');
+
+                document.getElementById("remove-course-container").addEventListener("click", getOpenCourses);
+              
                 courseToUpdate=document.getElementById('Update-course-form')
                 fieldToUpdate=document.getElementById('Update-field-form')
                 updateTo=document.getElementById('Update-To-form')
@@ -381,8 +376,6 @@ function FacultyDashboardComponent() {
                 startDateElement.addEventListener('keyup', updatestart_date);
                 endDateElement.addEventListener('keyup', updateend_date);
                 createCourseButton.addEventListener('click', createCourse);
-                getOpenCourses()
-                getCourseUpdate()
                 welcomeUserElement = document.getElementById('welcome-user');
 
 
