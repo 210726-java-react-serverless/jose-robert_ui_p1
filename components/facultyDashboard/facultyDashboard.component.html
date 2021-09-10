@@ -43,7 +43,7 @@
                         </div>
 
 
-                        <button id="create-course-button" class="w-100 btn btn-lg btn-primary" type="submit">CREATE</button>
+                        <button id="create-course-button" class="w-100 btn btn-lg btn-dark" type="submit">CREATE</button>
 
                 </div>
             </div>
@@ -88,7 +88,7 @@
                                     <input type="text" class="form-control" id="delete-course-form" placeholder="Enter Course code to delete course">
                                     <label for="delete-course-form">Delete Course</label>
                                 </div>
-                                <button id="delete-course-button" class="w-100 btn btn-lg btn-primary" type="submit">Delete</button>
+                                <button id="delete-course-button" class="w-100 btn btn-lg btn-dark" type="submit">Delete</button>
                             </div>
 
                         </div>
@@ -112,17 +112,20 @@
         <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
             <div class="accordion-body">
 
-
+<!--==============================Start edit course ==============================================-->
                 <div class="container" id="delete-container">
+                    <div class="alert alert-warning" role="alert">
+                       Course attribute names are in bold. When updating a date, update in a (yyyy-mm-dd) format.
+                    </div>
                     <div class="row" id="row-container">
                         <div class="col-md" id="one">
                             <table>
                                 <thead>
                                 <tr>
-                                    <th>Course Name</th>
-                                    <th>Course Code</th>
-                                    <th>Start Date</th>
-                                    <th>End Date</th>
+                                    <th>course_name</th>
+                                    <th>course_code</th>
+                                    <th>start_date</th>
+                                    <th>end_date</th>
                                 </tr>
                                 </thead>
                                 <tbody id="update-course-body">
@@ -154,7 +157,7 @@
                                     </div>
 
 
-                                    <button id="Update-course-button" class="w-100 btn btn-lg btn-primary" type="submit">Update</button>
+                                    <button id="Update-course-button" class="w-100 btn btn-lg btn-dark" type="submit">Update</button>
                             </div>
 
                         </div>
@@ -162,7 +165,7 @@
                 </div>
 
 
-
+<!--  ==============================END edit course ==============================================-->
 
 
 

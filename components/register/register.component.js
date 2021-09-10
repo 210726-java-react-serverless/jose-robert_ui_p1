@@ -190,7 +190,7 @@ function RegisterComponent() {
     }
 
     this.render = function() {
-        RegisterComponent.prototype.injectStylesheet();
+
         RegisterComponent.prototype.injectTemplate(() => {
             accountFormElement = document.getElementById("account-form");
             studentFormElement = document.getElementById("student-form");
@@ -229,6 +229,7 @@ function RegisterComponent() {
             facultyButtonElement.addEventListener('click', getRegisterForm);
             registerButtonElement.addEventListener('click', register);
         });
+        RegisterComponent.prototype.injectStylesheet();
     }
 
 }

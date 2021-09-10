@@ -104,7 +104,7 @@ function LoginComponent() {
     }
 
     this.render = function() {
-        LoginComponent.prototype.injectStylesheet();
+
         LoginComponent.prototype.injectTemplate(() => {
             usernameFieldElement = document.getElementById('login-form-username');
             passwordFieldElement = document.getElementById('login-form-password');;
@@ -117,6 +117,7 @@ function LoginComponent() {
             passwordFieldElement.addEventListener('keyup', updatePassword);
             loginButtonElement.addEventListener('click', login);
         });
+        LoginComponent.prototype.injectStylesheet();
     }
 }
 

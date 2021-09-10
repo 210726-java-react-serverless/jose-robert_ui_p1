@@ -285,9 +285,9 @@ function DashboardComponent() {
             return;
         }
 
-        let currentUsername = state.authUser.username;
+        let currentUsername = state.authUser.username.toUpperCase();
 
-        DashboardComponent.prototype.injectStylesheet();
+
         DashboardComponent.prototype.injectTemplate(() => {
             welcomeUserElement = document.getElementById("welcome-user");
             myCourseElement = document.getElementById("course-list");
@@ -306,7 +306,7 @@ function DashboardComponent() {
             getMyCourses();
             openCourseList();
         });
-
+        DashboardComponent.prototype.injectStylesheet();
     }
 }
 
